@@ -15,8 +15,10 @@
  - [FAQ](#faq)
  
 ## Introduction 
-In recent years, there are a great number of algorithsms proposed, trying to improve the efficiency of self-attention in Transformers. Some of them have already been realized on NLP or CV tasks, while the others are merely examined with either mathematical theories or some simple experiments. Here we implement all of them; especially, we make the I/O of our attention algorithms compatible with those of HuggingFace, making them easy-to-use. 
 [![INSERT YOUR GRAPHIC HERE](https://imgur.com/So7ZcF1.png)]()
+
+In recent years, there are a great number of algorithsms proposed, trying to improve the efficiency of self-attention in Transformers. Some of them have already been realized on NLP or CV tasks, while the others are merely examined with either mathematical theories or some simple experiments. Here we implement all of them; especially, we make the I/O of our attention algorithms compatible with those of HuggingFace, making them easy-to-use. 
+
 ### Sparse Attention
  - There are two types of 
 
