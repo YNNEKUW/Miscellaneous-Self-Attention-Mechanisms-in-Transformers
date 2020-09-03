@@ -61,8 +61,11 @@ class SelfAttention(nn.Module):
             elif self.attention_name == 'dense':
                 attention_scores = self.attention(self.transpose_for_scores(hidden_states), input_seq_len)
             else:
-                
-
+                mixed_query_layer = self.query(hidden_states)
+                query_layer = self.transpose_for_scores(mixed_query_layer)
+                attention_scores = self.attention(query_layer)
+                attention_scores = torch.matmul(query_layer, query_layer.transpose(-1, -2))
+                attention_scores = attention_scores / math.sqrt(self.attention_head_size)
 
         attention_scores = attention_scores + attention_mask
         attention_probs = nn.Softmax(dim=-1)(attention_scores)
