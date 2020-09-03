@@ -23,6 +23,8 @@ class SelfAttention(nn.Module):
         self.all_head_size = self.num_attention_heads * self.attention_head_size
 
         self.value = nn.Linear(hidden_size, self.all_head_size)
+        if bucket_size:
+            self.query = nn.Linear(hidden_size, self.all_head_size)
 
         attentions = {'dense': Dense_projection(max_seq_len, self.attention_head_size, bottleneck_size), 'rand': Rand_weight(max_seq_len, self.num_attention_heads), 'routing': RoutingAttention(self.num_attention_heads), 'ia': IALSHAttention16(False), 'simple': SimpleLSHAttention16(), 'simple_a': SimpleALSHAttention16(), 'ia_QNF': IALSHAttention16(True), 'xbox': XBOXAttention16(False), 'xbox_qnf': XBOXAttention16(True), 'sparse': SparseAttentionStrided(), 'sparse_f': SparseAttentionFixed()}
 
