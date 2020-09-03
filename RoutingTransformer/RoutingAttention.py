@@ -4,9 +4,6 @@ import numpy as np
 from kmeans_pytorch import kmeans
 
 
-
-
-
 class RoutingAttention(nn.Module):
     def __init__(self, heads):
         super().__init__()
