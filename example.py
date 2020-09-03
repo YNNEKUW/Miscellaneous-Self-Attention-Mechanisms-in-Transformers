@@ -53,6 +53,7 @@ class SelfAttention(nn.Module):
             else:
                 hash_mask = torch.zeros(attention_mask.shape).to(query_layer.device)
             attention_scores = torch.matmul(query_layer, query_layer.transpose(-1, -2))
+            attention_scores += hash_mask 
             attention_scores = attention_scores / math.sqrt(self.attention_head_size)
         else:
             input_seq_len = hidden_states.shape[1]
@@ -63,8 +64,9 @@ class SelfAttention(nn.Module):
             else:
                 mixed_query_layer = self.query(hidden_states)
                 query_layer = self.transpose_for_scores(mixed_query_layer)
-                attention_scores = self.attention(query_layer)
+                hash_mask = self.attention(query_layer)
                 attention_scores = torch.matmul(query_layer, query_layer.transpose(-1, -2))
+                attention_scores += hash_mask
                 attention_scores = attention_scores / math.sqrt(self.attention_head_size)
 
         attention_scores = attention_scores + attention_mask
