@@ -100,7 +100,7 @@ hidden_state = torch.ones((50, max_seq_len, hidden_size))
 attention_mask = torch.zeross((50, max_seq_len))
 
 # lsh/routing/sparse attentions
-attention_name = 'simple'
+attention_name = 'simple' # 'routing', 'ia', 'ia_qnf', 'simple', 'simple_a', 'xbox', 'xbox_qnf', 'sparse', 'sparse_f'
 bucket_size = 32
 
 selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name, bucket_size)
