@@ -35,9 +35,9 @@ In recent years, there are a great number of algorithsms proposed, trying to imp
  - In our experiments, this algorithms achieve the best performance (With some of our proposed initialization techiniques).
 
 ## Example
-ff
+See the examples in `examples.py`.
 
 
 ## FAQ
-ff
+.
 
