@@ -12,7 +12,7 @@ import math
 
 
 class SelfAttention(nn.Module):
-    def __init__(self, num_attention_heads, hidden_size, max_seq_len, attention_name, bucket_size=None, output_attentions=False, keep_multihead_output=False, attention_probs_dropout_prob=0.1):
+    def __init__(self, num_attention_heads, hidden_size, max_seq_len, attention_name, bucket_size=None, bottleneck_size=16, output_attentions=False, keep_multihead_output=False, attention_probs_dropout_prob=0.1):
         super(SelfAttention, self).__init__()
 
         self.output_attentions = output_attentions
@@ -24,7 +24,7 @@ class SelfAttention(nn.Module):
 
         self.value = nn.Linear(hidden_size, self.all_head_size)
 
-        attentions = {'dense': Dense_projection(max_seq_len, self.attention_head_size), 'rand': Rand_weight(max_seq_len, self.num_attention_heads), 'routing': RoutingAttention(self.num_attention_heads), 'ia': IALSHAttention16(False), 'simple': SimpleLSHAttention16(), 'simple_a': SimpleALSHAttention16(), 'ia_QNF': IALSHAttention16(True), 'xbox': XBOXAttention16(False), 'xbox_qnf': XBOXAttention16(True), 'sparse': SparseAttentionStrided(), 'sparse_f': SparseAttentionFixed()}
+        attentions = {'dense': Dense_projection(max_seq_len, self.attention_head_size, bottleneck_size), 'rand': Rand_weight(max_seq_len, self.num_attention_heads), 'routing': RoutingAttention(self.num_attention_heads), 'ia': IALSHAttention16(False), 'simple': SimpleLSHAttention16(), 'simple_a': SimpleALSHAttention16(), 'ia_QNF': IALSHAttention16(True), 'xbox': XBOXAttention16(False), 'xbox_qnf': XBOXAttention16(True), 'sparse': SparseAttentionStrided(), 'sparse_f': SparseAttentionFixed()}
 
         self.bucket_size = bucket_size
         self.attention_name = attention_name
@@ -87,3 +87,31 @@ class SelfAttention(nn.Module):
         if self.output_attentions:
             return attention_probs, context_layer
         return context_layer
+
+
+num_attention_heads = 12
+hidden_size = 768
+max_seq_len = 1000
+
+
+hidden_state = torch.ones((50, max_seq_len, hidden_size))
+attention_mask = torch.zeross((50, max_seq_len))
+
+# lsh/routing/sparse attentions
+attention_name = 'simple'
+bucket_size = 32
+
+selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name, bucket_size)
+result_lsh = selfattention(hidden_state, attention_mask)
+
+
+#dense
+attention_name = 'dense'
+selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name, None, 16)
+result_dense = selfattention(hidden_state, attention_mask)
+
+
+#random
+attention_name = 'rand'
+selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name)
+result_random = selfattention(hidden_state, attention_mask)
