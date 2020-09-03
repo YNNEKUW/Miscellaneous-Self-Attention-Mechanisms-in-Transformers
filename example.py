@@ -77,7 +77,7 @@ class SelfAttention(nn.Module):
             attention_probs = attention_probs * head_mask
 
         context_layer = torch.matmul(attention_probs, value_layer)
-        if self.keep_multihead_output:
+        if self.keep_multihead_output: 
             self.multihead_output = context_layer
             self.multihead_output.retain_grad()
 
