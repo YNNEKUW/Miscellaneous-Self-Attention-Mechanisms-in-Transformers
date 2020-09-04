@@ -1,112 +1,22 @@
 import torch
 import torch.nn as nn
 import math
-"""
-from functools import partial, wraps
 
-from utils import default
-
-# This function is for reversible layer
-def cache_method_decorator(cache_attr, cache_key, execute_in_cache=False):
-    def inner_fn(fn):
-        @wraps(fn)
-        def wrapper(self, *args, namespace=None, get_from_cache=False, set_cache=True, **kwargs):
-            namespace_str = str(default(namespace, ''))
-            _cache = getattr(self, cache_attr)
-            _keyname = f'{cache_key}:{namespace_str}'
-
-            if get_from_cache:
-                if execute_in_cache:
-                    fn(self, *args, **kwargs) 
-                val = _cache[_keyname]
-            else:
-                val = fn(self, *args, **kwargs)
-                if set_cache:
-                    setattr(self, cache_attr, {**_cache, **{_keyname: val}})
-            
-            return 
-        return wrapper
-    return inner_fn
-
-"""
-
-
-########################################################################################
-########################################################################################
-
-class IALSHAttention(nn.Module):
-    def __init__(self,
-                 m=2,
-                 U=0.75
-                 ):
-        super().__init__()
-        self.m = m
-        self.U = U
-
-      
-    def forward(self, qk, QNF=False, **kwargs):
-        qk = qk.detach().to(torch.float16)
-        batch_size, n_heads, seq_len, dim, device = *qk.shape, qk.device # [6,12,384,64]
-        # Removing Dependency on Norm of Query
-        qk_norm = torch.norm(qk, dim=-1, keepdim=True)
-        
-        M = torch.max(qk_norm)
-        qk = qk * self.U / M
-        tmp_zero = torch.zeros(qk_norm.shape, device=device)
-        
-        P = qk
-        Q = qk
-        # Transform P and Q
-        for i in range(self.m):
-            tmp = 0.5 - torch.pow(qk_norm, (i+1)*2)
-            P = torch.cat((P, tmp), -1)
-            
-            Q = torch.cat((Q, tmp_zero), -1)           # [6, 12, 384, 66]
-        if QNF:
-            _P_norm = torch.norm(P, dim=-1, keepdim=True)
-            _Q_norm = torch.norm(Q, dim=-1, keepdim=True)
-            _M = torch.max(_P_norm)
-            P = (P / _P_norm) * _M
-            Q = (Q / _Q_norm) * _M
-        
-        if P.shape != Q.shape:
-            raise ValueError('Shapes of P and Q are mismatch.')
-        
-        a = torch.randn([batch_size, n_heads, seq_len, dim+self.m], device=device).normal_(mean=0, std=1)
-        
-        # a = torch.normal(torch.zeros_like(Q), torch.ones_like(Q))
-        
-
-        Q = torch.sum(Q.mul(a), dim=-1)           # [6, 12, 384]
-        # Q = Q.permute(2, 0, 1)                    # [384, 6, 12]
-
-        a_P = torch.unsqueeze(a, -2)
-        a_P = a_P.expand(-1, -1, -1, seq_len, -1) # [6, 12, 384, 384, 64+2]
-        a_P = a_P.permute(2, 0, 1, 3, 4)          # [384, 6, 12, 384, 64+2]
-
-        P = torch.sum(a_P.mul(P), dim=-1)         # [384, 6, 12, 384]
-
-
-        result = Q.unsqueeze(0).mul(P)                             # [384, 6, 12, 384]
-        result = result.permute(1, 2, 0, 3)
-        result_0 = torch.zeros(result.shape, device=device)
-        result_10000 = torch.ones(result.shape, device=device) * (-10000.)
-        result = torch.where(result>0, result_0, result_10000)
-
-        return result.detach()
 
 class IALSHAttention16(nn.Module):
     def __init__(self,
+                 qnf,
                  m=2,
                  U=0.75
                  ):
         super().__init__()
         self.m = m
         self.U = U
+        self.QNF = qnf
 
-    def forward(self, qk, bucket_size=32, QNF=False, **kwargs):
+    def forward(self, qk, bucket_size=32, **kwargs):
         qk = qk.detach().to(torch.float16)
-        batch_size, n_heads, seq_len, dim, device = *qk.shape, qk.device # [6,12,384,64]
+        batch_size, n_heads, seq_len, dim, device = *qk.shape, qk.device
         # Removing Dependency on Norm of Query
         qk_norm = torch.norm(qk, dim=-1, keepdim=True)
         
@@ -116,14 +26,14 @@ class IALSHAttention16(nn.Module):
         
         P = qk
         Q = qk
-        # Transform P and Q
+
         for i in range(self.m):
             tmp = 0.5 - torch.pow(qk_norm, (i+1)*2)
             P = torch.cat((P, tmp), -1)
             
-            Q = torch.cat((Q, tmp_zero), -1)           # [6, 12, 384, 66]
+            Q = torch.cat((Q, tmp_zero), -1)
         
-        if QNF:
+        if self.QNF:
             _P_norm = torch.norm(P, dim=-1, keepdim=True)
             _Q_norm = torch.norm(Q, dim=-1, keepdim=True)
             _M = torch.max(_P_norm)
@@ -133,28 +43,15 @@ class IALSHAttention16(nn.Module):
         if P.shape != Q.shape:
             raise ValueError('Shapes of P and Q are mismatch.')
         
-        # a = a.to(torch.float16)
         a = torch.randn([batch_size, n_heads, seq_len, dim+self.m], device=device).to(torch.float16).normal_(mean=0, std=1)
-        # a = torch.normal(torch.zeros_like(Q), torch.ones_like(Q))
-        
 
-        Q = torch.sum(Q.mul(a), dim=-1)           # [6, 12, 384]
-
-        # a_P = torch.unsqueeze(a, -2)
-        # a_P = a_P.expand(-1, -1, -1, seq_len, -1) # [6, 12, 384, 384, 64+2]
-        # a_P = a_P.permute(2, 0, 1, 3, 4)          # [384, 6, 12, 384, 64+2]
-
-        # P = torch.sum(a_P.mul(P), dim=-1)         # [384, 6, 12, 384]
+        Q = torch.sum(Q.mul(a), dim=-1)           
         P = torch.matmul(P, a.transpose(-1, -2)).permute(3, 0, 1, 2)
 
 
-        result = Q.unsqueeze(0).mul(P)                             # [384, 6, 12, 384]
+        result = Q.unsqueeze(0).mul(P)                           
         result = result.permute(1, 2, 0, 3)
-        """
-        result_0 = torch.zeros(result.shape, device=device)
-        result_10000 = torch.ones(result.shape, device=device) * (-10000.)
-        result_ = torch.where(result>0, result_0, result_10000)
-        """
+
         result[result!=result] =0.
         max_idx = torch.topk(result, k=bucket_size, dim=-1)[1]
         result = torch.ones(result.shape, device=device) * (-10000.)

@@ -9,6 +9,7 @@ from Synthesizer.synthesizer_dense import Dense_projection
 from Synthesizer.synthesizer_random import Rand_weight
 from RoutingTransformer.RoutingAttention import RoutingAttention
 import math
+from time import time
 
 
 class SelfAttention(nn.Module):
@@ -25,8 +26,11 @@ class SelfAttention(nn.Module):
         self.value = nn.Linear(hidden_size, self.all_head_size)
         if bucket_size:
             self.query = nn.Linear(hidden_size, self.all_head_size)
+        if attention_name == 'qk':
+            self.query = nn.Linear(hidden_size, self.all_head_size)
+            self.key = nn.Linear(hidden_size, self.all_head_size)
 
-        attentions = {'dense': Dense_projection(max_seq_len, self.attention_head_size, bottleneck_size), 'rand': Rand_weight(max_seq_len, self.num_attention_heads), 'routing': RoutingAttention(self.num_attention_heads), 'ia': IALSHAttention16(False), 'simple': SimpleLSHAttention16(), 'simple_a': SimpleALSHAttention16(), 'ia_QNF': IALSHAttention16(True), 'xbox': XBOXAttention16(False), 'xbox_qnf': XBOXAttention16(True), 'sparse': SparseAttentionStrided(), 'sparse_f': SparseAttentionFixed()}
+        attentions = {'qk': None, 'dense': Dense_projection(max_seq_len, self.attention_head_size, bottleneck_size), 'rand': Rand_weight(max_seq_len, self.num_attention_heads), 'routing': RoutingAttention(self.num_attention_heads), 'ia': IALSHAttention16(False), 'simple': SimpleLSHAttention16(), 'simple_a': SimpleALSHAttention16(), 'ia_QNF': IALSHAttention16(True), 'xbox': XBOXAttention16(False), 'xbox_qnf': XBOXAttention16(True), 'sparse': SparseAttentionStrided(), 'sparse_f': SparseAttentionFixed()}
 
         self.bucket_size = bucket_size
         self.attention_name = attention_name
@@ -47,15 +51,25 @@ class SelfAttention(nn.Module):
         mixed_value_layer = self.value(hidden_states)
         value_layer = self.transpose_for_scores(mixed_value_layer)
 
-        if self.bucket_size:
+        if self.attention_name in ['ia', 'simple', 'simple_a', 'xbox', 'xbox_qnf', 'sparse', 'sparse_f']:
             mixed_query_layer = self.query(hidden_states)
             query_layer = self.transpose_for_scores(mixed_query_layer)
             if query_layer.shape[-2] > self.bucket_size:
-                hash_mask = self.attention(query_layer, attention_mask, self.bucket_size)
+                if self.attention_name in ['sparse', 'sparse_f']:
+                    hash_mask = self.attention(query_layer)
+                else:
+                    hash_mask = self.attention(query_layer, self.bucket_size)
             else:
                 hash_mask = torch.zeros(attention_mask.shape).to(query_layer.device)
             attention_scores = torch.matmul(query_layer, query_layer.transpose(-1, -2))
             attention_scores += hash_mask 
+            attention_scores = attention_scores / math.sqrt(self.attention_head_size)
+        elif self.attention_name == 'qk':
+            mixed_query_layer = self.query(hidden_states)
+            query_layer = self.transpose_for_scores(mixed_query_layer)
+            mixed_key_layer = self.key(hidden_states)
+            key_layer = self.transpose_for_scores(mixed_key_layer)
+            attention_scores = torch.matmul(query_layer, key_layer.transpose(-1, -2))
             attention_scores = attention_scores / math.sqrt(self.attention_head_size)
         else:
             input_seq_len = hidden_states.shape[1]
@@ -93,27 +107,41 @@ class SelfAttention(nn.Module):
 
 num_attention_heads = 12
 hidden_size = 768
-max_seq_len = 1000
+max_seq_len = 512
+batch_size = 6
 
 
-hidden_state = torch.ones((50, max_seq_len, hidden_size))
-attention_mask = torch.zeross((50, max_seq_len))
+hidden_state = torch.rand((batch_size, max_seq_len, hidden_size)).cuda()
+attention_mask = torch.zeros((batch_size, 1, 1, max_seq_len)).cuda()
 
-# lsh/routing/sparse attentions
-attention_name = 'simple' # 'routing', 'ia', 'ia_qnf', 'simple', 'simple_a', 'xbox', 'xbox_qnf', 'sparse', 'sparse_f'
-bucket_size = 32
 
-selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name, bucket_size)
+# the original query-key self-attention
+attention_name = 'qk' 
+
+selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name).cuda()
+start = time()
 result_lsh = selfattention(hidden_state, attention_mask)
+print('{} takes {} s\n'.format(attention_name, time()-start))
 
 
-#dense
+bucket_size = 32
+for attention_name in ['ia', 'simple', 'simple_a', 'xbox', 'xbox_qnf', 'sparse', 'sparse_f']:
+    selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name, bucket_size).cuda()
+    start = time()
+    result_lsh = selfattention(hidden_state, attention_mask)
+    print('{} takes {} s\n'.format(attention_name, time()-start))
+
+
 attention_name = 'dense'
-selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name, None, 16)
+selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name, None, 16).cuda()
+start = time()
 result_dense = selfattention(hidden_state, attention_mask)
+print('{} takes {} s\n'.format(attention_name, time()-start))
 
 
-#random
+
 attention_name = 'rand'
-selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name)
+selfattention = SelfAttention(num_attention_heads, hidden_size, max_seq_len, attention_name).cuda()
+start = time()
 result_random = selfattention(hidden_state, attention_mask)
+print('{} takes {} s\n'.format(attention_name, time()-start))
