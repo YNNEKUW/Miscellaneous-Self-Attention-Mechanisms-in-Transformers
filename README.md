@@ -47,6 +47,7 @@ See the examples in `example.py`.
     journal={arXiv preprint arXiv:1904.10509},
     year={2019}
 }
+
 @article{
     title={Efficient Content-Based Sparse Attention with Routing Transformers},
     author={Roy, Aurko and Saffar, Mohammad and Vaswani, Ashish and Grangier, David},
@@ -54,13 +55,16 @@ See the examples in `example.py`.
     journal={arXiv preprint arXiv:2003.05997},
     year={2020}
 }
-@article{
-    title={Input-independent Attention Weights Are Expressive Enough: A Study of Attention in Self-supervised Audio Transformers},
-    author={Wu, Tsung-Han and Hsieh, Chun-Chen and Chen, Yen-Hao and Chi, Po-Han and Lee, Hung-yi},
-    year={2020},
-    journal={arXiv preprint arXiv:2006.05174},
-    year={2020}
+
+@inproceedings{liu2020towards,
+  title={Accurate and fast asymmetric locality-sensitive hashing scheme for maximum inner product search},
+  author={Huang, Qiang and Ma, Guihong and Feng, Jianlin and Fang, Qiong, and Tung, Anthony KH},
+  booktitle={The 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining},
+  pages={1561–-1570},
+  year={2018},
+  organization={ACM SIGKDD}
 }
+
 @article{
     title={Input-independent Attention Weights Are Expressive Enough: A Study of Attention in Self-supervised Audio Transformers},
     author={Wu, Tsung-Han and Hsieh, Chun-Chen and Chen, Yen-Hao and Chi, Po-Han and Lee, Hung-yi},
