@@ -33,6 +33,11 @@ In recent years, there are a great number of algorithsms proposed, trying to imp
 ### Synthesizer
  - There are two different types of Synthesizer being proposed: **Dense** and **Random**.
  - In our experiments, this algorithms achieve the best performance (With some of our proposed initialization techiniques).
+ - For our **Random** attention module, we make the attention weights become trainable model parameters. And we initialize their weights with handcrafted patterns before pretraining. [![INSERT YOUR GRAPHIC HERE](https://imgur.com/CEkMNg6.png)]()
+
+
+### Experiment result
+All these modules can be incorporated into [Mockingjay](https://github.com/andi611/Mockingjay-Speech-Representation) and pretrained and finetuned on [Librispeech](https://www.openslr.org/12). Please refer to [our paper](https://arxiv.org/pdf/2006.05174.pdf) for more details of the experiment results.
 
 ## Example
 See the examples in `example.py`.
