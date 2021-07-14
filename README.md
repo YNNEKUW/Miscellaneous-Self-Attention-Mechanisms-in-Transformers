@@ -40,12 +40,12 @@ See the examples in `example.py`.
 
 ## Citations
 ```bibtex
-@inproceedings{
-    title={Is Attention Better Than Matrix Decomposition?},
-    author={Geng, Zhengyang and Guo, Meng-Hao and Chen, Hongxu and Li, Xia and Wei, Ke and Lin Zhouchen}
-    year={2021},
-    url={https://openreview.net/forum?id=1FvkSpWosOl},
-    note={ICLR 2021}
+@article{
+    title={Input-independent Attention Weights Are Expressive Enough: A Study of Attention in Self-supervised Audio Transformers},
+    author={Wu, Tsung-Han and Hsieh, Chun-Chen and Chen, Yen-Hao and Chi, Po-Han and Lee, Hung-yi}
+    year={2020},
+    journal={arXiv preprint arXiv:2006.05174},
+    year={2020}
 }
 ```
 
