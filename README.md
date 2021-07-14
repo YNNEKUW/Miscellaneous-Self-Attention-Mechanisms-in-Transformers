@@ -12,7 +12,7 @@
 ## Table of Contents
  - [Introduction](#introduction)
  - [Example](#example)
- - [Citations](#cit)
+ - [Citations](#faq)
  
 ## Introduction 
 [![INSERT YOUR GRAPHIC HERE](https://imgur.com/So7ZcF1.png)]()
