@@ -56,7 +56,7 @@ See the examples in `example.py`.
     year={2020}
 }
 
-@inproceedings{liu2020towards,
+@inproceedings{10.1145/3219819.3219971,
   title={Accurate and fast asymmetric locality-sensitive hashing scheme for maximum inner product search},
   author={Huang, Qiang and Ma, Guihong and Feng, Jianlin and Fang, Qiong, and Tung, Anthony KH},
   booktitle={The 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining},
