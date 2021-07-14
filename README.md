@@ -12,7 +12,7 @@
 ## Table of Contents
  - [Introduction](#introduction)
  - [Example](#example)
- - [FAQ](#faq)
+ - [Citations](#cit)
  
 ## Introduction 
 [![INSERT YOUR GRAPHIC HERE](https://imgur.com/So7ZcF1.png)]()
@@ -38,6 +38,14 @@ In recent years, there are a great number of algorithsms proposed, trying to imp
 See the examples in `example.py`.
 
 
-## FAQ
-.
+## Citations
+```bibtex
+@inproceedings{
+    title={Is Attention Better Than Matrix Decomposition?},
+    author={Geng, Zhengyang and Guo, Meng-Hao and Chen, Hongxu and Li, Xia and Wei, Ke and Lin Zhouchen}
+    year={2021},
+    url={https://openreview.net/forum?id=1FvkSpWosOl},
+    note={ICLR 2021}
+}
+```
 
