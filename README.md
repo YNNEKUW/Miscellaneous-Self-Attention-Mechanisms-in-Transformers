@@ -42,7 +42,7 @@ See the examples in `example.py`.
 ```bibtex
 @article{
     title={Input-independent Attention Weights Are Expressive Enough: A Study of Attention in Self-supervised Audio Transformers},
-    author={Wu, Tsung-Han and Hsieh, Chun-Chen and Chen, Yen-Hao and Chi, Po-Han and Lee, Hung-yi}
+    author={Wu, Tsung-Han and Hsieh, Chun-Chen and Chen, Yen-Hao and Chi, Po-Han and Lee, Hung-yi},
     year={2020},
     journal={arXiv preprint arXiv:2006.05174},
     year={2020}
