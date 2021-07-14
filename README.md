@@ -66,12 +66,23 @@ See the examples in `example.py`.
 }
 
 @inproceedings{raganato-etal-2020-fixed,
-    title = "Fixed Encoder Self-Attention Patterns in Transformer-Based Machine Translation",
+    title = {Fixed Encoder Self-Attention Patterns in Transformer-Based Machine Translation},
     author = {Raganato, Alessandro  and Scherrer, Yves  and Tiedemann, J{\"o}rg},
-    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2020",
-    year = "2020",
-    publisher = "Association for Computational Linguistics",
-    pages = "556--568"
+    booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2020},
+    year = {2020},
+    publisher = {Association for Computational Linguistics},
+    pages = {556--568}
+}
+
+@article{DBLP:journals/corr/abs-2005-00743,
+  title     = {Synthesizer: Rethinking Self-Attention in Transformer Models},
+  author    = {Yi, Tay and Dara, Bahri and Donald, Metzler and Da{-}Cheng, Juan and Zhe, Zhao and Che, Zheng},
+  journal   = {CoRR},
+  volume    = {abs/2005.00743},
+  year      = {2020},
+  url       = {https://arxiv.org/abs/2005.00743},
+  archivePrefix = {arXiv},
+  eprint    = {2005.00743},
 }
 
 
