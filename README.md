@@ -65,6 +65,16 @@ See the examples in `example.py`.
   organization={ACM SIGKDD}
 }
 
+@inproceedings{raganato-etal-2020-fixed,
+    title = "Fixed Encoder Self-Attention Patterns in Transformer-Based Machine Translation",
+    author = {Raganato, Alessandro  and Scherrer, Yves  and Tiedemann, J{\"o}rg},
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2020",
+    year = "2020",
+    publisher = "Association for Computational Linguistics",
+    pages = "556--568"
+}
+
+
 @article{
     title={Input-independent Attention Weights Are Expressive Enough: A Study of Attention in Self-supervised Audio Transformers},
     author={Wu, Tsung-Han and Hsieh, Chun-Chen and Chen, Yen-Hao and Chi, Po-Han and Lee, Hung-yi},
