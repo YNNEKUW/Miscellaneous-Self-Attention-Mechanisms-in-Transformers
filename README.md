@@ -34,7 +34,7 @@ In recent years, there are a great number of algorithsms proposed, trying to imp
  - There are two different types of Synthesizer being proposed: **Dense** and **Random**.
  - In our experiments, this algorithms achieve the best performance (With some of our proposed initialization techiniques).
  - For our **Random** attention module, we make the attention weights become trainable model parameters. And we initialize the weights of 7 of the attention heads with handcrafted patterns before pretraining. [![INSERT YOUR GRAPHIC HERE](https://i.imgur.com/C0x3YQZ.png)]()
- - After pretraining, they become [![INSERT YOUR GRAPHIC HERE](https://i.imgur.com/ZeUzRl5.png)
+ - After pretraining, they become [![INSERT YOUR GRAPHIC HERE](https://i.imgur.com/ZeUzRl5.png)]()
 
 
 ### Experiment result
