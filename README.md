@@ -41,6 +41,27 @@ See the examples in `example.py`.
 ## Citations
 ```bibtex
 @article{
+    title={Generating long sequences with sparse transformers},
+    author={Child, Rewon and Gray, Scott and Radford, Alec and Sutskever, Ilya},
+    year={2019},
+    journal={arXiv preprint arXiv:1904.10509},
+    year={2019}
+}
+@article{
+    title={Efficient Content-Based Sparse Attention with Routing Transformers},
+    author={Roy, Aurko and Saffar, Mohammad and Vaswani, Ashish and Grangier, David},
+    year={2020},
+    journal={arXiv preprint arXiv:2003.05997},
+    year={2020}
+}
+@article{
+    title={Input-independent Attention Weights Are Expressive Enough: A Study of Attention in Self-supervised Audio Transformers},
+    author={Wu, Tsung-Han and Hsieh, Chun-Chen and Chen, Yen-Hao and Chi, Po-Han and Lee, Hung-yi},
+    year={2020},
+    journal={arXiv preprint arXiv:2006.05174},
+    year={2020}
+}
+@article{
     title={Input-independent Attention Weights Are Expressive Enough: A Study of Attention in Self-supervised Audio Transformers},
     author={Wu, Tsung-Han and Hsieh, Chun-Chen and Chen, Yen-Hao and Chi, Po-Han and Lee, Hung-yi},
     year={2020},
